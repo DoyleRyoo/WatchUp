@@ -1,1 +1,56 @@
+# ==========================================
+# Watch-Up 통합 .gitignore (Root)
+# ==========================================
+
+# OS/System Files
+.DS_Store
+Thumbs.db
+*.local
+*.log
+
+# IDE & Editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
 node_modules/
+
+# ==========================================
+# Frontend (Vite + React)
+# ==========================================
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/*.local
+frontend/.env
+frontend/.env.*
+frontend/.eslintcache
+
+# ==========================================
+# Backend (Node.js + Express)
+# ==========================================
+backend/node_modules/
+backend/.env
+backend/.env.*
+backend/*.log
+backend/logs/
+
+# Firebase Admin SDK Private Key (보안 필수)
+backend/serviceAccountKey.json
+backend/*.json
+!backend/package.json
+
+# ==========================================
+# Python (yfinance Environment)
+# ==========================================
+backend/src/python/venv/
+backend/src/python/.venv/
+**/__pycache__/
+*.py[cod]
+*$py.class
+backend/src/python/.pytest_cache/
+backend/src/python/.env

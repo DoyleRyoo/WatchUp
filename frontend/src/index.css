@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  background-color: #0B0E14;
+  color: #E4E6EB;
+  font-family: 'Pretendard', sans-serif;
+  overflow-x: hidden;
+}
+
+/* 스크롤바 커스텀 스타일 (대시보드 최적화) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0B0E14;
+}
+::-webkit-scrollbar-thumb {
+  background: #242B35;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2C3542;
+}
