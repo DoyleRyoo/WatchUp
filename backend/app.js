@@ -1,29 +1,42 @@
-const express = require('express');
-const cors = require('cors');
-require('dotenv').config();
+import express from "express";
+import cors from "cors";
 
-const loggerMiddleware = require('./src/middleware/logger.middleware');
-const errorMiddleware = require('./src/middleware/error.middleware');
+import stockRoutes from "./src/routes/stock.routes.js";
+import { admin } from "./src/firebase/firebaseAdmin.js";
 
 const app = express();
 
-// 기본 보안 및 파싱 미들웨어
-app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
-  credentials: true
-}));
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-// 커스텀 로그 미들웨어 적용
-app.use(loggerMiddleware);
+app.use("/api/stocks", stockRoutes);
 
-// 기본 헬스 체크 엔드포인트
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK', message: 'Watch-Up Backend Server Stable' });
+app.get("/api/health", (req, res) => {
+  return res.status(200).json({
+    success: true,
+    message: "Watch-Up Backend Running",
+    timestamp: new Date().toISOString(),
+  });
 });
 
-// 전역 중앙 집중식 에러 핸들러 (반드시 모든 라우트 정의 하단에 배치)
-app.use(errorMiddleware);
+app.get(
+  "/api/health/firebase",
+  async (req, res) => {
+    try {
+      await admin.auth().listUsers(1);
 
-module.exports = app;
+      return res.status(200).json({
+        success: true,
+        firebase: "connected",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        firebase: "failed",
+        message: error.message,
+      });
+    }
+  }
+);
+
+export default app;
