@@ -1,33 +1,13 @@
-import Header from "../components/layout/Header";
-import Sidebar from "../components/layout/Sidebar";
+import MainLayout from "../components/layout/MainLayout";
 
-function MainLayout({
+function DashboardLayout({
   children,
 }) {
   return (
-    <div
-      className="
-      min-h-screen
-      bg-slate-950
-      text-white
-    "
-    >
-      <Header />
-
-      <div className="flex">
-        <Sidebar />
-
-        <main
-          className="
-          flex-1
-          p-6
-        "
-        >
-          {children}
-        </main>
-      </div>
-    </div>
+    <MainLayout>
+      {children}
+    </MainLayout>
   );
 }
 
-export default MainLayout;
+export default DashboardLayout;

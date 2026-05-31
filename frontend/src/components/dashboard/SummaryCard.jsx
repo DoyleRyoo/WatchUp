@@ -1,15 +1,24 @@
-export default function SummaryCard({
-  title,
-  value,
-  color = "text-white",
-}) {
+import { motion } from "framer-motion";
+
+export default function SummaryCard({ title, value, color = "text-white", }) {
   return (
-    <div
+    <motion.div
+      initial={{
+        opacity: 0,
+        y: 20,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+      transition={{
+        duration: 0.4,
+      }}
       className="
         rounded-2xl
-        border border-slate-700
-        bg-slate-800/50
-        backdrop-blur
+        border
+        border-white/10
+        bg-white/5
         p-5
       "
     >
@@ -22,6 +31,6 @@ export default function SummaryCard({
       >
         {value}
       </h3>
-    </div>
+    </motion.div>
   );
 }

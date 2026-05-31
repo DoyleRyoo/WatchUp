@@ -16,10 +16,7 @@ export const getHoldings = async (req, res) => {
 
 export const createHolding = async (req, res) => {
   try {
-    const id = await stockService.createHolding(
-      req.user.uid,
-      req.body
-    );
+    const id = await stockService.createHolding(req.user.uid, req.body);
 
     res.status(201).json({
       id,
@@ -36,10 +33,7 @@ export const createHolding = async (req, res) => {
 
 export const deleteHolding = async (req, res) => {
   try {
-    await stockService.deleteHolding(
-      req.user.uid,
-      req.params.id
-    );
+    await stockService.deleteHolding(req.user.uid, req.params.id);
 
     res.status(200).json({
       message: "삭제 완료",

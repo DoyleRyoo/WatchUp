@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+
+import DashboardLayout from "../layouts/DashboardLayout";
 
 import HoldingsTable from "../components/table/HoldingsTable";
 
@@ -10,9 +13,15 @@ import DashboardSkeleton from "../components/dashboard/DashboardSkeleton";
 
 import { stockApi } from "../services/api/stockApi";
 
+import socket from "../services/socket/socket";
+
+import StockChart from "../components/chart/StockChart";
+
 export default function DashboardPage() {
   const [holdings, setHoldings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [prices, setPrices] = useState([]);
+  const [selectedSymbol, setSelectedSymbol] = useState(null);
 
   const loadHoldings = async () => {
     try {
@@ -29,8 +38,33 @@ export default function DashboardPage() {
   };
 
   useEffect(() => {
-    loadHoldings();
-  }, []);
+  loadHoldings();
+
+  const handleMarketUpdate = (marketData) => {
+    setHoldings((prev) =>
+      prev.map((holding) => {
+        const market = marketData.find((item) =>
+          item.symbol === holding.stockCode
+        );
+
+        if (!market) {
+          return holding;
+        }
+
+        return {
+          ...holding,
+          currentPrice: market.currentPrice,
+        };
+      })
+    );
+  };
+
+  socket.on("market:update", handleMarketUpdate);
+
+  return () => {
+    socket.off("market:update", handleMarketUpdate);
+  };
+}, []);
 
   const handleDelete = async (id) => {
     await stockApi.deleteHolding(id);
@@ -43,19 +77,38 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <SummaryCards
-        holdings={holdings}
-      />
-
-      {holdings.length === 0 ? (
-        <EmptyState />
-      ) : (
-        <HoldingsTable
+    <DashboardLayout>
+      <motion.div
+        className="space-y-6"
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity: 1,
+        }}
+        transition={{
+          duration: 0.4,
+        }}
+      >
+        <SummaryCards
           holdings={holdings}
-          onDelete={handleDelete}
         />
-      )}
-    </div>
+
+        {holdings.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <>
+            <HoldingsTable
+              holdings={holdings}
+              onDelete={handleDelete}
+              onSelect={setSelectedSymbol}
+            />
+            {
+              selectedSymbol && (<StockChart symbol={ selectedSymbol } />)
+            }
+          </>
+        )}
+      </motion.div>
+    </DashboardLayout>
   );
 }
